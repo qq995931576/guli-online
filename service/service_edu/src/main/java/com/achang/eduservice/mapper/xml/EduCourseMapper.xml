@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achang.eduservice.mapper.EduCourseMapper">
+
+    <select id="getPublishCourseInfo" resultType="com.achang.eduservice.entity.vo.CoursePublishVo">
+        SELECT
+            ec.id,
+            ec.title,
+            ec.cover,
+            ec.lesson_num AS lessonNum,
+            ec.price,
+            s1.title AS subjectLevelOne,
+            s2.title AS subjectLevelTwo,
+            t.name AS teacherName
+        FROM
+            edu_course ec
+                LEFT JOIN edu_teacher t ON ec.id = t.id
+                LEFT JOIN edu_subject s1 ON ec.subject_parent_id = s1.id
+                LEFT JOIN edu_subject s2 ON ec.id = s2.id
+        WHERE
+            ec.id = #{id}
+    </select>
+
+    <!--前台根据课程id，查询课程基础信息-->
+    <select id="getBaseCourseInfo" resultType="com.achang.eduservice.entity.frontVo.CourseWebVo">
+        SELECT
+            ec.id,
+            ec.title,
+            ec.cover,
+            ec.lesson_num AS lessonNum,
+            ec.price,
+            ec.cover,
+            ec.buy_count as buyCount,
+            ec.view_count as viewCount,
+            esd.description,
+            s1.title AS subjectLevelOne,
+            s1.id as subjectLevelOneId,
+            s2.id as subjectLevelTwoId,
+            s2.title AS subjectLevelTwo,
+            t.name AS teacherName,
+            t.id as teacherId,
+            t.avatar,
+            t.intro
+        FROM
+            edu_course ec
+                LEFT JOIN edu_teacher t ON ec.teacher_id = t.id
+                LEFT JOIN edu_subject s1 ON ec.subject_parent_id = s1.id
+                LEFT JOIN edu_subject s2 ON ec.id = s2.id
+                left join edu_course_description esd on ec.id = esd.id
+        WHERE
+            ec.id = #{id}
+    </select>
+</mapper>
